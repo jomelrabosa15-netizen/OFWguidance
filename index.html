@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gabay ng Langit • Panalangin at Gabay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{--night:#0b0820;--plum:#1d1240;--violet:#5b3fa8;--gold:#e6c36a;--rose:#f0b8d0;--ink:#f3ecff;--mute:#b9aedb}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--night);color:var(--ink);font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.55}
+body{background:radial-gradient(1200px 700px at 50% -10%,#2a1860 0%,var(--night) 60%) fixed;min-height:100vh;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 16px 60px}
+h1,h2,h3,.btn{font-family:'Cinzel',serif;letter-spacing:.04em}
+/* cover + profile */
+.cover{height:190px;margin:0 -16px;background:linear-gradient(180deg,#3a2290,#1d1240) center/cover;position:relative;border-bottom:1px solid #e6c36a55;overflow:hidden}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--night))}
+.profile{display:flex;flex-direction:column;align-items:center;margin-top:-62px;position:relative;z-index:2;text-align:center}
+.avatar{width:120px;height:120px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 30px #e6c36a77,0 0 70px #7a4fe055;background:var(--plum);object-fit:cover;display:grid;place-items:center;font-size:46px;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+h1{font-size:26px;margin-top:12px;color:var(--gold);text-shadow:0 0 18px #e6c36a66}
+.tag{color:var(--mute);font-style:italic;margin-top:4px}
+/* front/back */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 0 8px}
+.pair figure{background:linear-gradient(160deg,#2a1b5c,#150d33);border:1px solid #e6c36a66;border-radius:14px;padding:8px;box-shadow:0 0 28px #6a3fd055}
+.pair .ph{aspect-ratio:3/4;border-radius:8px;overflow:hidden;background:#120a2c;display:grid;place-items:center;color:var(--mute);text-align:center;font-size:15px}
+.pair img{width:100%;height:100%;object-fit:cover;display:block}
+figcaption{text-align:center;font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-top:6px}
+/* buttons */
+.btn{background:linear-gradient(180deg,#f3d98a,#c99a35);color:#2a1a00;border:0;border-radius:999px;padding:14px 26px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 0 24px #e6c36a77;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold);box-shadow:none}
+.btn.sm{padding:9px 18px;font-size:14px}
+:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.start{display:block;margin:22px auto;font-size:18px;padding:16px 34px;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 44px #e6c36acc}}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;scroll-margin-top:10px}
+.menu button{background:linear-gradient(160deg,#2d1c68,#170e38);border:1px solid #e6c36a77;border-radius:16px;color:var(--ink);padding:20px 10px;cursor:pointer;font-family:'Cinzel',serif;font-size:15px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.menu button span{font-size:34px;filter:drop-shadow(0 0 10px #e6c36a)}
+.menu button:hover,.menu button.on{border-color:var(--gold);box-shadow:0 0 26px #e6c36a66}
+/* panels */
+.panel{display:none;margin-top:22px;background:#150d33cc;border:1px solid #e6c36a55;border-radius:18px;padding:22px 18px;box-shadow:0 0 40px #5b3fa855}
+.panel.on{display:block;animation:fade .4s}
+@keyframes fade{from{opacity:0}}
+.panel h2{color:var(--gold);font-size:21px;margin-bottom:6px}
+.panel p.sub{color:var(--mute);margin-bottom:14px}
+label{display:block;margin:10px 0 4px;color:var(--mute);font-size:16px}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #e6c36a66;background:#0b0820;color:var(--ink);font:inherit;font-size:18px;color-scheme:dark}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.result{margin-top:18px;padding:18px;border-radius:14px;background:linear-gradient(160deg,#2a1b5c,#120a2c);border:1px solid #e6c36a88;white-space:pre-line}
+.result:empty{display:none}
+.big{font-family:'Cinzel',serif;font-size:44px;color:var(--gold);text-align:center;text-shadow:0 0 24px #e6c36a;line-height:1.1}
+.center{text-align:center}
+.swatch{width:110px;height:110px;border-radius:50%;margin:6px auto 10px;box-shadow:0 0 50px currentColor;border:2px solid #fff6}
+.dots{display:flex;gap:10px;justify-content:center;margin:6px 0 12px}
+.dots i{width:30px;height:30px;border-radius:50%;border:1px solid #fff6}
+.prayers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.prayers img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px;background:#0b0820}.prayers b{font-family:Cinzel,serif;font-size:14px;font-weight:500;color:var(--gold)}.pimg img{width:100%;border-radius:10px;display:block;border:1px solid #e6c36a66}
+.prayers button{text-align:left;background:#1d1240;border:1px solid #e6c36a66;color:var(--ink);border-radius:12px;padding:8px;font:inherit;cursor:pointer}
+.prayers button:hover{border-color:var(--gold)}
+.note{margin-top:30px;text-align:center;color:var(--mute);font-size:14px;font-style:italic}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.chip{border:1px solid #e6c36a77;border-radius:999px;padding:5px 14px;font-size:15px;color:var(--gold);background:#1d124088}
+.bio{margin-top:14px;text-align:center;max-width:560px;color:var(--ink)}
+.contact{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.contact a{text-decoration:none;display:inline-block}
+.menu button:last-child:nth-child(odd){grid-column:1/-1}
+.flame{width:34px;height:60px;margin:0 auto;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(ellipse at 50% 75%,#fff7c2 0,#ffd04d 35%,#ff8a1f 70%,transparent 72%);box-shadow:0 0 40px 14px #ffb84d88;animation:flick 1.4s ease-in-out infinite alternate;transform-origin:50% 100%}
+.wax{width:46px;height:70px;margin:2px auto 0;border-radius:6px 6px 10px 10px;background:linear-gradient(90deg,#e8dcc4,#fff8e8,#e8dcc4)}
+@keyframes flick{0%{transform:scale(1,1) rotate(-2deg)}100%{transform:scale(.93,1.08) rotate(2deg)}}
+textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #e6c36a66;background:#0b0820;color:var(--ink);font:inherit;font-size:18px;min-height:90px;resize:vertical}
+.langbar{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:5;display:flex;gap:6px}
+.langbar button{background:#0b0820cc;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:6px 14px;font:500 14px Cinzel,serif;cursor:pointer}
+.langbar button.on{background:var(--gold);color:#2a1a00}
+#langdlg{position:fixed;inset:0;z-index:50;background:#000b;display:grid;place-items:center;padding:16px}
+#langdlg[hidden]{display:none}
+.dlg{background:#150d33;border:1px solid var(--gold);border-radius:16px;padding:18px;max-width:380px;width:100%;max-height:85vh;overflow:auto}
+.dlg .lopt{display:block;width:100%;text-align:left;margin:6px 0;padding:12px 14px;border-radius:12px;border:1px solid #e6c36a66;background:#1d1240;color:var(--ink);font:inherit;font-size:18px;cursor:pointer}
+.dlg .lopt.on{border-color:var(--gold);background:#2d1c68;color:var(--gold)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas>
+<main>
+<div class="langbar"><button id="langbtn" aria-haspopup="dialog">🌐 Language</button></div>
+<div id="langdlg" hidden><div class="dlg" role="dialog" aria-modal="true" aria-label="Language"><h2 style="font-size:20px;color:var(--gold);margin-bottom:10px">🌐 Language / Wika</h2><div id="langlist"></div><p id="langnote" style="margin-top:12px;color:var(--mute);font-size:14px;font-style:italic"></p></div></div>
+
+<!-- ====== PALITAN DITO ANG INYONG DETALYE ====== -->
+<!-- Folder na "images" katabi ng index.html: harap.jpg, likod.jpg at mga prayer card. Opsyonal: cover.jpg, profile.jpg -->
+<div class="cover"><img src="cover.jpg" alt="" onerror="this.remove()"></div>
+<div class="profile">
+  <div class="avatar"><img src="profile.jpg" alt="Profile" onerror="this.replaceWith('✦')"></div>
+  <h1 id="brand">Gabay ng Langit</h1>
+  <p class="tag">Panalangin • Pananampalataya • Gabay ng Uniberso</p>
+  <div class="chips"><span class="chip">🌏 Para sa mga OFW</span><span class="chip" id="clock"></span></div>
+  <p class="bio" id="bio"></p>
+  <div class="contact" id="contact"></div>
+  <p id="greet" class="tag" style="margin-top:10px"></p>
+</div>
+
+<div class="pair">
+  <figure><div class="ph"><img src="images/harap.jpg" alt="Harap" onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=1jpTCnR1Q6j-aTTLN7fioPGJu0SRbuHvN&sz=w1000'"></div><figcaption>Harap</figcaption></figure>
+  <figure><div class="ph"><img src="images/likod.jpg" alt="Likod" onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=1CC3qdRXolNTwfAwYMC0ynPc1YRhj-6Q0&sz=w1000'"></div><figcaption>Likod</figcaption></figure>
+</div>
+
+<button class="btn start" id="start">✦ Simulan ang Paglalakbay ✦</button>
+
+<div class="menu" id="menu">
+  <button data-p="numero"><span>🔮</span>Numerologist</button>
+  <button data-p="zodiac"><span>♌</span>Zodiac Sign</button>
+  <button data-p="kulay"><span>🎨</span>Kulay ng 2027</button>
+  <button data-p="dasal"><span>🙏</span>Mga Panalangin</button>
+  <button data-p="daily"><span>🌅</span>Gabay Ngayong Araw</button>
+  <button data-p="ofw"><span>✈️</span>Panalangin ng OFW</button>
+  <button data-p="kandila"><span>🕯️</span>Kandila at Petisyon</button>
+</div>
+
+<!-- NUMEROLOGIST -->
+<section class="panel" id="numero">
+  <h2>Numerologist</h2>
+  <p class="sub">Ilagay ang iyong detalye para mabasa ang gabay para sa iyo.</p>
+  <label for="n_name">Pangalan (opsyonal)</label><input id="n_name" autocomplete="off">
+  <div class="row">
+    <div><label for="n_date">Petsa ng kapanganakan</label><input type="date" id="n_date"></div>
+    <div><label for="n_time">Oras ng kapanganakan</label><input type="time" id="n_time"></div>
+  </div>
+  <label for="n_place">Lugar ng kapanganakan</label><input id="n_place" placeholder="Hal. Antipolo, Rizal" autocomplete="off">
+  <div class="actions"><button class="btn" id="n_go">Basahin ang Gabay</button></div>
+  <div class="result" id="n_out" aria-live="polite"></div>
+  <div class="actions voice" id="n_v" hidden></div>
+</section>
+
+<!-- ZODIAC -->
+<section class="panel" id="zodiac">
+  <h2>Zodiac Sign</h2>
+  <p class="sub">Alamin ang iyong bituin at mensahe mula sa kalangitan.</p>
+  <label for="z_date">Petsa ng kapanganakan</label><input type="date" id="z_date">
+  <div class="actions"><button class="btn" id="z_go">Ipakita ang Sign Ko</button></div>
+  <div class="result" id="z_out" aria-live="polite"></div>
+  <div class="actions voice" id="z_v" hidden></div>
+</section>
+
+<!-- KULAY -->
+<section class="panel" id="kulay">
+  <h2>Kulay ng Taon 2027</h2>
+  <p class="sub">Ang kulay na gagabay sa iyo sa darating na taon.</p>
+  <div class="row">
+    <div><label for="k_date">Petsa ng kapanganakan</label><input type="date" id="k_date"></div>
+    <div><label for="k_time">Oras ng kapanganakan</label><input type="time" id="k_time"></div>
+  </div>
+  <div class="actions"><button class="btn" id="k_go">Ipakita ang Kulay Ko</button></div>
+  <div class="result" id="k_out" aria-live="polite"></div>
+  <div class="actions voice" id="k_v" hidden></div>
+</section>
+
+<!-- PANALANGIN -->
+<section class="panel" id="dasal">
+  <h2>Mga Panalangin</h2>
+  <p class="sub">Pumili ng panalangin. Maaari mo itong basahin o pakinggan.</p>
+  <div class="prayers" id="plist"></div>
+  <div class="result" id="p_out" aria-live="polite"></div>
+  <div class="actions voice" id="p_v" hidden></div>
+</section>
+
+
+<!-- GABAY NGAYON -->
+<section class="panel" id="daily">
+  <h2>Gabay Ngayong Araw</h2>
+  <p class="sub">Mensahe at Arkanghel para sa araw mo, saan ka man sa mundo. Ilagay ang birthday para mas personal (opsyonal).</p>
+  <label for="d_date">Petsa ng kapanganakan</label><input type="date" id="d_date">
+  <div class="actions"><button class="btn" id="d_go">Basahin ang Gabay Ngayon</button></div>
+  <div class="result" id="d_out" aria-live="polite"></div>
+  <div class="actions voice" id="d_v" hidden></div>
+</section>
+
+<!-- OFW -->
+<section class="panel" id="ofw">
+  <h2>Panalangin ng OFW</h2>
+  <p class="sub">Mga panalangin para sa mga kababayan nating malayo sa pamilya.</p>
+  <div class="prayers" id="olist" style="grid-template-columns:1fr"></div>
+  <div class="result" id="o_out" aria-live="polite"></div>
+  <div class="actions voice" id="o_v" hidden></div>
+</section>
+
+<!-- KANDILA -->
+<section class="panel" id="kandila">
+  <h2>Kandila at Petisyon</h2>
+  <p class="sub">Magsindi ng kandila para sa iyong hiling. Maaari mo ring ipadala sa amin ang iyong petisyon upang maipanalangin.</p>
+  <label for="c_name">Pangalan</label><input id="c_name" autocomplete="off">
+  <label for="c_text">Ano ang ipinapanalangin mo?</label><textarea id="c_text" placeholder="Hal. Kalusugan ng nanay ko sa Pinas"></textarea>
+  <div class="actions"><button class="btn" id="c_go">🕯 Magsindi ng Kandila</button></div>
+  <div class="result center" id="c_out" aria-live="polite"></div>
+  <div class="actions voice" id="c_v" hidden></div>
+  <div class="actions" id="c_send" hidden><button class="btn sm" id="c_ship">Ipadala ang Petisyon</button></div>
+</section>
+
+<p class="note">Ang mga gabay dito ay para sa inspirasyon at pagninilay, hindi kapalit ng payo ng doktor, abogado, o propesyonal.</p>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+/* ---- Starfield ---- */
+(function(){const c=$('#stars'),x=c.getContext('2d');let S=[];
+function sz(){c.width=innerWidth;c.height=innerHeight;S=Array.from({length:110},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.6+.3,p:Math.random()*6}))}
+function d(t){x.clearRect(0,0,c.width,c.height);S.forEach(s=>{x.globalAlpha=.4+.6*Math.abs(Math.sin(t/1600+s.p));x.fillStyle='#fff3c9';x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill()});requestAnimationFrame(d)}
+addEventListener('resize',sz);sz();
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(d);else d(0)})();
+
+/* ---- Navigation ---- */
+function show(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));
+document.querySelectorAll('.menu button').forEach(b=>b.classList.toggle('on',b.dataset.p===id));
+stopV();$('#'+id).scrollIntoView({behavior:'smooth',block:'start'})}
+document.querySelectorAll('.menu button').forEach(b=>b.onclick=()=>show(b.dataset.p));
+$('#start').onclick=()=>$('#menu').scrollIntoView({behavior:'smooth'});
+
+/* ---- Voice ---- */
+function stopV(){try{speechSynthesis.cancel()}catch(e){}}
+function speak(t){if(!('speechSynthesis' in window)){alert(lang==='en'?'This browser does not support voice.':'Hindi suportado ng browser na ito ang boses.');return}
+stopV();const u=new SpeechSynthesisUtterance(t.replace(/[✦•]/g,' '));const v=speechSynthesis.getVoices();
+const f=lang==='en'?v.find(a=>/^en/i.test(a.lang)):(v.find(a=>/^(fil|tl)/i.test(a.lang))||v.find(a=>/^en/i.test(a.lang)));if(f){u.voice=f;u.lang=f.lang}else u.lang=lang==='en'?'en-US':'fil-PH';
+u.rate=.88;u.pitch=.95;speechSynthesis.speak(u)}
+function voiceBtns(id,getText){const b=$(id);b.hidden=false;
+b.innerHTML='<button class="btn sm ghost" data-a="p">🔊 Pakinggan</button><button class="btn sm ghost" data-a="s">⏹ Itigil</button>';
+b.firstChild.onclick=()=>speak(getText());b.lastChild.onclick=stopV}
+function out(id,html,vid){$(id).innerHTML=html;voiceBtns(vid,()=>$(id).innerText);applyLang()}
+
+/* ---- Helpers ---- */
+const red=n=>{while(n>9&&![11,22,33].includes(n))n=String(n).split('').reduce((a,b)=>a+ +b,0);return n};
+const sum=s=>String(s).split('').reduce((a,b)=>a+(+b||0),0);
+const pd=v=>{const [y,m,d]=v.split('-').map(Number);return{y,m,d}};
+function need(v,msg){if(!v){alert(lang==='en'?'Please enter your date of birth first.':(msg||'Pakilagay muna ang petsa ng kapanganakan.'));return false}return true}
+
+/* ---- Numerology ---- */
+const LP={
+1:'Ikaw ay isinilang para manguna. May lakas ka ng loob na magsimula ng bago. Hinihikayat ka ng Diyos na magtiwala sa sarili at sa landas na binubuksan Niya para sa iyo.',
+2:'Ikaw ay tagapagpayapa at tagapag-ugnay. Ang pasensya mo ang iyong lakas. Ngayon, ang mensahe ay maghintay nang may pananalig; ang tamang tao at tamang oras ay darating.',
+3:'May biyaya ka ng salita, saya, at pagkamalikhain. Ibahagi mo ang iyong talento, dahil sa pagbibigay mo ng liwanag, mas dumarami ang bumabalik sa iyo.',
+4:'Ikaw ay haligi ng pamilya at pinagkakatiwalaan. Ang sipag mo ay binabantayan ng langit. Magtayo ka nang dahan-dahan; matibay ang pundasyong inilalatag mo.',
+5:'Malaya ang iyong espiritu at sabik sa pagbabago. Huwag matakot sa bagong daan; ang pagbabago sa buhay mo ay may kasamang proteksyon at bagong pagkakataon.',
+6:'Puso ang iyong gabay. Ikaw ang nag-aalaga sa iba, ngunit tandaan na ikaw rin ay mahalaga. Magpahinga at tanggapin ang pagmamahal na ibinabalik sa iyo.',
+7:'Malalim ang iyong kaluluwa at madalas kang naghahanap ng kahulugan. Sa katahimikan at panalangin, doon mo maririnig ang pinakamalinaw na sagot.',
+8:'May lakas kang magtagumpay at mamahala ng biyaya. Gamitin mo ito nang may kabutihan; ang kasaganaan ay dumadaloy sa taong marunong magpasalamat at magbahagi.',
+9:'May malawak kang puso at misyong makatulong sa kapwa. Ang pagpapakawala sa nakaraan ay magbubukas ng pintuan ng bagong yugto ng buhay mo.',
+11:'Master Number 11: ikaw ay may matalas na intuwisyon. Ang mga panaginip at kutob mo ay mensahe. Pakinggan mo ito, at ipanalangin ang linaw.',
+22:'Master Number 22: ikaw ay tagapagtayo ng malalaking pangarap. Ang pananampalataya mo, sinamahan ng gawa, ay kayang magpatayo ng bagay na makikinabang ang marami.',
+33:'Master Number 33: ikaw ay tagapagpagaling at guro ng pag-ibig. Ang malasakit mo ay liwanag sa mga taong napapagod.'};
+function daypart(t){if(!t)return'';const h=+t.split(':')[0];
+if(h<5)return'Isinilang ka sa malalim na gabi, oras ng mga kaluluwang may matinding pananalig at lihim na lakas.';
+if(h<12)return'Isinilang ka sa umaga, tanda ng bagong simula at lakas na laging bumabangon.';
+if(h<18)return'Isinilang ka sa hapon, tanda ng pagsisikap at pusong marunong magpatuloy.';
+return'Isinilang ka sa gabi, tanda ng malalim na damdamin at kakayahang makaramdam ng mga bagay na hindi nakikita.'}
+$('#n_go').onclick=()=>{const v=$('#n_date').value;if(!need(v))return;
+const {y,m,d}=pd(v),lp=red(sum(y)+sum(m)+sum(d)),dn=red(d),nm=$('#n_name').value.trim(),pl=$('#n_place').value.trim(),t=$('#n_time').value;
+const py=red(sum(m)+sum(d)+sum(2027));
+const html=`<div class="big">${lp}</div><p class="center" style="color:var(--gold);font-family:Cinzel">Life Path Number</p><br>`+
+(nm?`Mahal kong ${nm},\n\n`:'')+LP[lp]+`\n\nAng Birthday Number mo na ${dn} ay nagpapakita ng natural mong talento: ${LP[dn]?LP[dn].split('.')[0]:''}.`+
+`\n\n${daypart(t)}`+(pl?` Ang lugar ng iyong kapanganakan, ang ${pl}, ay bahagi ng iyong kuwento at ng mga taong nagmamahal sa iyo.`:'')+
+`\n\nSa taong 2027, ang Personal Year Number mo ay ${py}. Ito ay panahon para ${['','magsimula ng bago','magpakumbaba at maghintay','lumikha at magsaya','magtrabaho nang tapat','magbago at maglakbay','mag-alaga ng pamilya','magnilay at manalangin','umani ng biyaya','magpakawala at magtapos','magsimula ng bago','sumunod sa intuwisyon','magtayo ng pangarap','magpagaling ng iba'][py>9?(py===11?11:py===22?12:13):py]||'magtiwala'}.`+
+`\n\n✦ Mensahe: Hindi ka nag-iisa. Ang Diyos at ang uniberso ay laging nakabantay sa bawat hakbang mo. Magpasalamat, manalangin, at magpatuloy nang may pag-asa. ✦`;
+out('#n_out',html,'#n_v')};
+
+/* ---- Zodiac ---- */
+const Z=[['Capricorn','♑','Lupa',[12,22],'Disiplinado at matiyaga ka. Ang bawat pagod mo ay nakikita ng langit. Huwag kalimutang magpahinga at magtiwala.'],
+['Aquarius','♒','Hangin',[1,20],'Malaya ang isip mo at may pusong makatao. Ang kakaiba mong pananaw ay regalo; ibahagi mo ito nang may kababaang-loob.'],
+['Pisces','♓','Tubig',[2,19],'Malalim ang damdamin at espiritwal ang kaluluwa mo. Ipagkatiwala sa panalangin ang mga alalahanin na hindi mo kayang buhatin.'],
+['Aries','♈','Apoy',[3,21],'Matapang ka at laging handang magsimula. Pakinggan ang bulong ng tamang oras bago kumilos; doon ka pinakamalakas.'],
+['Taurus','♉','Lupa',[4,20],'Tapat at matatag ka. Ang biyayang pinaghirapan mo ay nagtatagal. Magpasalamat, at mas darami pa ito.'],
+['Gemini','♊','Hangin',[5,21],'Matalino at madaldal ka, may talinong umaakit ng tao. Gamitin ang salita sa pagpapalakas ng loob ng iba.'],
+['Cancer','♋','Tubig',[6,21],'Mapag-alaga ka at malakas ang pakiramdam. Ang tahanan mo ay santuwaryo; protektahan mo rin ang sarili mong puso.'],
+['Leo','♌','Apoy',[7,23],'May liwanag kang likas at puso ng isang lider. Ang tunay na korona mo ay ang kabutihang ibinibigay mo.'],
+['Virgo','♍','Lupa',[8,23],'Maingat at mapagsilbi ka. Hindi mo kailangang maging perpekto; sapat na ang iyong pagsisikap sa mata ng Diyos.'],
+['Libra','♎','Hangin',[9,23],'Mahilig ka sa katarungan at kapayapaan. Pumili nang may tiwala; ang balanse ay nagsisimula sa loob mo.'],
+['Scorpio','♏','Tubig',[10,23],'Malalim ka at may lakas ng pagbabagong-buhay. Ang sugat ng nakaraan ay nagiging lakas kapag ipinagdasal.'],
+['Sagittarius','♐','Apoy',[11,22],'Naghahanap ka ng katotohanan at kalayaan. Ang paglalakbay mo ay may layunin; magtiwala kung saan ka dinadala.']];
+function sign(m,d){const o=[...Z].sort((a,b)=>a[3][0]-b[3][0]||a[3][1]-b[3][1]);let r=Z[0];
+for(const s of Z){if(s[3][0]<m||(s[3][0]===m&&s[3][1]<=d)){if(s[0]!=='Capricorn'||false)r=s}}
+return (m===12&&d>=22)||(m===1&&d<20)?Z[0]:Z.slice(1).filter(s=>s[3][0]<m||(s[3][0]===m&&s[3][1]<=d)).pop()||Z[0]}
+$('#z_go').onclick=()=>{const v=$('#z_date').value;if(!need(v))return;const {m,d}=pd(v),s=sign(m,d);
+out('#z_out',`<div class="big">${s[1]}</div><p class="center" style="color:var(--gold);font-family:Cinzel;font-size:22px">${s[0]}</p><p class="center" style="color:var(--mute)">Elemento: ${s[2]}</p><br>${s[4]}\n\n✦ Mensahe: Ang mga bituin ay gabay lamang; ang Diyos pa rin ang may hawak ng iyong landas. ✦`,'#z_v')};
+
+/* ---- Color of 2027 ---- */
+const C={1:['Pula (Ruby Red)','#d9264a','Lakas, tapang, bagong simula.'],2:['Perlas na Puti','#f5efe6','Kapayapaan, pasensya, paghilom.'],3:['Dilaw na Ginto','#f2c230','Saya, talento, pagkamalikhain.'],4:['Luntiang Esmeralda','#1f9d6b','Katatagan, kalusugan, pundasyon.'],5:['Asul na Turquoise','#27b5c9','Pagbabago, paglalakbay, kalayaan.'],6:['Rosas','#f08ab4','Pag-ibig, pamilya, malasakit.'],7:['Lila (Amethyst)','#9b6bdc','Intuwisyon, pananampalataya, katahimikan.'],8:['Ginto at Kayumanggi','#c9962f','Kasaganaan, tagumpay, awtoridad.'],9:['Asul na Royal','#3a54d6','Karunungan, pagpapakawala, kabutihang-loob.'],11:['Pilak','#cfd6e6','Linaw ng isip at espiritwal na gabay.'],22:['Ginto at Puti','#efe2a8','Pagtatayo ng malalaking pangarap.'],33:['Rosas na Ginto','#f3b6a0','Pagpapagaling at pag-ibig sa kapwa.']};
+const ACC=['#1b1464','#7a1fa2','#d9264a','#f2c230','#1f9d6b','#27b5c9'];
+$('#k_go').onclick=()=>{const v=$('#k_date').value;if(!need(v))return;const {m,d}=pd(v),t=$('#k_time').value;
+const py=red(sum(m)+sum(d)+sum(2027)),c=C[py],h=t?+t.split(':')[0]:12,a=ACC[Math.floor(h/4)%6];
+out('#k_out',`<div class="swatch" style="background:${c[1]};color:${c[1]}"></div><p class="center" style="font-family:Cinzel;color:var(--gold);font-size:22px">${c[0]}</p><p class="center" style="color:var(--mute)">Personal Year Number: ${py}</p><br>Ang iyong pangunahing kulay sa 2027 ay para sa: ${c[2]}\n\nGamitin ito sa damit, alahas, o gamit na lagi mong dala.`+
+(t?`\n\nBatay sa oras ng iyong kapanganakan, ito ang iyong pangalawang kulay na pandagdag-lakas:<div class="dots"><i style="background:${c[1]}"></i><i style="background:${a}"></i></div>`:'')+`\n✦ Mensahe: Isuot ang iyong kulay nang may panalangin, at hayaan itong ipaalala na ang 2027 ay taon ng iyong biyaya. ✦`,'#k_v')};
+
+/* ---- Prayers ---- */
+const P=[
+['Swerte at Panalo','winning','1UPhLkrK-ob3lrw5z_LwQ8h7SoNCT_o8_','Panalangin para sa Swerte, Panalo sa Sugal, Lotto o Raffle','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Iyong gabay at biyaya para sa swerte at pagkapanalo sa sugal, lotto, o raffle.\n\nBuksan po Ninyo ang mga pintuan ng magandang kapalaran, at bigyan ako ng pabor at maswerteng pagkakataon. Gabayan Ninyo ako upang maging mapanatag, matalino, at wasto sa bawat desisyon at subok ko.\n\nIaalay ko po sa Inyo ang bunga ng posibleng panalo at gagamitin ko ito nang tama, para sa kabutihan ko, ng aking pamilya, at sa tamang layunin. Maraming salamat po sa Inyong walang hanggang gabay, swerte, at pagpapala.\n\nAmen.'],
+['Maswerteng Kapalaran','good-fortune','1jDUNZdyxdw7HgFzBN8GtjMTZu5h0VzuP','Panalangin para sa Maswerteng Kapalaran at Pabor','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na biyaya ng maswerteng kapalaran at pabor sa aking buhay.\n\nBuksan po Ninyo ang mga pintuan ng magagandang oportunidad, pagpapala, kasaganaan, at tagumpay.\n\nGabayan po Ninyo ako upang maging handa, masipag, at marunong sa bawat pagkakataon na Inyong ibibigay.\n\nIlayo Ninyo ako sa mga hadlang at negatibong impluwensya, at bigyan ng biyaya upang laging mapasama sa tamang lugar, tamang tao, at tamang pagkakataon.\n\nMaraming salamat po sa Inyong walang hanggang gabay, pabor, at masaganang pagpapala.\n\nAmen.'],
+['Bagong Pagkakataon','new-opportunities','1H_tlYZemL8U4pS3UHXJvVbmTf9kuu1Ji','Panalangin para sa Tagumpay at Bagong Pagkakataon','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong basbas, gabay, at pagbubukas ng mga bagong oportunidad para sa aking buhay.\n\nBigyan Ninyo po ako ng karunungan, tapang, at tamang direksyon upang magawa ko nang maayos ang aking mga plano at layunin. Buksan Ninyo po ang mga pintuan ng tagumpay sa aking trabaho, negosyo, at mga gawain, at ilayo ako sa anumang sagabal. Gabayan Ninyo ako na samantalahin ang mga oportunidad na ibibigay Ninyo, upang ito\'y maging daan sa mas magandang kinabukasan para sa akin at sa aking pamilya.\n\nMaraming salamat po sa Inyong walang hanggang gabay, suporta, at masaganang pagpapala.\n\nAmen.'],
+['Karunungan at Tamang Pasya','wisdom','1vce3mpBzBitfrbYIrOFnru6sB73RPfwH','Panalangin para sa Karunungan at Tamang Pagpapasya','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na gabay at karunungan sa bawat desisyon na aking gagawin.\n\nBigyan Ninyo po ako ng malinaw na isipan, malawak na pang-unawa, at tamang discernment upang piliin ang nararapat at makabubuti sa aking buhay, pamilya, at kinabukasan. Pusuan Ninyo ako ng kapayapaan at kumpiyansa na ang aking mga desisyon ay naaayon sa Inyong kalooban.\n\nIlayo Ninyo po ako sa mga pagkakamali, pagmamadali, at maling impluwensya, at gabayan Ninyo ako sa daan ng tama, ligtas, at may pagpapala.\n\nMaraming salamat po sa Inyong walang hanggang gabay, karunungan, at pagmamahal.\n\nAmen.'],
+['Proteksyon at Patnubay','protection','10my46Pdap42R15UxyVU5aPYGn3fC6y07','Panalangin para sa Proteksyon at Patnubay','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na proteksyon sa akin at sa aking mga mahal sa buhay. Buksan po Ninyo ang aking isipan at puso upang laging gabayan ako sa tamang pagpapasya, iwasan ang kapahamakan, at ilayo sa lahat ng masama.\n\nPusuan Ninyo ako ng karunungan, lakas, kapayapaan, at kapanatagan sa bawat araw. Gabayan Ninyo ako sa aking mga lakad, paggawa, at mga plano, upang ako\'y laging nasa tamang landas at matupad ang Inyong kalooban.\n\nMaraming salamat po sa Inyong walang hanggang gabay, proteksyon, at pagmamahal.\n\nAmen.'],
+['Pag-aaral ng Anak','children','15GAmo9sRL8GLk9UImjbns7BHyu-tSC81','Panalangin para sa Pag-aaral at Kinabukasan ng Aking mga Anak','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong gabay at proteksyon para sa aking mga anak sa kanilang pag-aaral. Bigyan Ninyo po sila ng malinaw na pag-iisip, matalinong pang-unawa, mabuting memorya, at sipag sa pag-aaral.\n\nPusuan Ninyo po sila ng disiplina, determinasyon, at tamang pagpapasya upang maabot nila ang kanilang mga pangarap at magkaroon ng magandang kinabukasan.\n\nIlayo Ninyo po sila sa tukso, pagkabalisa, at mga negatibong impluwensya na maaaring makasagabal sa kanilang pag-aaral.\n\nMaraming salamat po sa Inyong walang hanggang gabay, proteksyon, at pagmamahal sa aking mga anak.\n\nAmen.'],
+['Pamilya at Mahal sa Buhay','family','1kpa9WuuJqMVWCJda-RvMOf0aRfX90Xi4','Panalangin para sa Pamilya at mga Minamahal sa Buhay','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na proteksyon at paggabay para sa aking pamilya at mga minamahal sa buhay.\n\nBuksan po Ninyo ang aming tahanan sa pagmamahalan, pagkakaunawaan, pagkakaisa, at kapayapaan.\n\nGabayan po Ninyo kami sa bawat desisyon, ilayo sa anumang panganib, sakit, at kapahamakan, at bigyan ng mabuting kalusugan, lakas, at kabutihan sa pang-araw-araw.\n\nNawa\'y basbasan Ninyo ang aming samahan, palaguin ang aming mga biyaya, at laging puno ng pagmamahal at respeto ang aming pamilya.\n\nMaraming salamat po sa Inyong walang hanggang gabay, proteksyon, at pagmamahal sa amin.\n\nAmen.'],
+['Mabuting Pakikitungo','attraction','1aW4Y-S3XlhgC5Jn9tmsmnGWZlw4EtHF1','Panalangin para sa Mabuting Pakikitungo at Mas Maraming Positibong Tao sa Buhay','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na tulong upang ako\'y maging kaaya-aya, may mabuting aura, at magdala ng positibong enerhiya sa mga tao. Buksan po Ninyo ang aking landas upang magkaroon ako ng mas magagandang ugnayan, matapat na kaibigan, maaasahang kasama, at mabubuting taong sumusuporta sa akin.\n\nGabayan Ninyo ako sa aking pakikitungo upang lagi akong maging magalang, mabait, may pag-unawa, at may positibong pananaw. Nawa\'y hilahin Ninyo sa aking buhay ang mga taong may mabuting intensyon at nakakatulong sa aking personal na pag-unlad, tagumpay, at kapayapaan.\n\nMaraming salamat po sa Inyong walang hanggang gabay, proteksyon, at pagpapala.\n\nAmen.'],
+['Pag-ibig at Relasyon','love','1xG0Ir939ttQ44gtG87if7421axUu0v07','Panalangin para sa Pag-ibig at Matatag na Relasyon','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na gabay para sa aking pag-ibig at mga relasyon. Buksan po Ninyo ang aking puso upang maranasan ang tunay at tapat na pag-ibig, paggalang, at pag-unawa.\n\nGabayan Ninyo ako na makilala ang tamang tao para sa akin, o patibayin at pag-ibayuhin ang aking kasalukuyang relasyon.\n\nNawa\'y alisin Ninyo ang mga hadlang, hindi pagkakaunawaan, at anumang negatibong impluwensya na sumisira sa pagkakaisa at kapayapaan sa aming samahan.\n\nMaraming salamat po sa Inyong walang hanggang gabay, proteksyon, at pagmamahal.\n\nAmen.'],
+['Trabaho at Karera','career','1fZv2UtoqkpLp0Urix8xkmcIEvlf-VGtW','Panalangin para sa Tagumpay sa Trabaho at Karera','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na tulong at gabay para sa aking karera at mga oportunidad sa trabaho. Buksan po Ninyo ang mga pintuan ng bagong oportunidad, tamang trabaho, at pag-unlad sa aking propesyon.\n\nGabayan Ninyo ako upang magawa ko nang maayos at may katapatan ang aking tungkulin, magtagumpay sa mga pagsubok, at makamit ang matatag at maayos na kinabukasan. Nawa\'y ipadala Ninyo sa akin ang mga taong makatutulong, tamang pagkakataon, at mga proyekto na magbubukas ng mas maraming paglago at tagumpay sa aking buhay.\n\nMaraming salamat po sa Inyong walang hanggang gabay, proteksyon, at pagpapala.\n\nAmen.'],
+['Tagumpay sa Negosyo','business','1iHkaxw7KFd23Lf1olHfH4GvSALdBnPiv','Panalangin para sa Tagumpay sa Negosyo','Mahal na Diyos,\n\nSa pamamagitan ng Pitong Arkanghel, lalo na kina Arkanghel Michael, Gabriel, at Uriel, humihingi po ako ng Inyong banal na gabay at pagpapala para sa aking negosyo.\n\nBuksan po Ninyo ang mga pintuan ng paglago, mas maraming benta, mas maraming kostumer, at tuloy-tuloy na kita.\n\nGabayan Ninyo ako na gumawa ng tamang desisyon, maging matalino sa pamamahala ng puhunan, at malayo sa anumang pagkalugi.\n\nNawa\'y patuloy Ninyong pagpalain ang aking mga produkto at serbisyo, bigyan ng tiwala ang mga kostumer, at palakasin ang ugnayan sa mga kasama ko sa negosyo.\n\nSalamat po sa Inyong walang hanggang gabay, proteksyon, at masaganang pagpapala. Tinatanggap ko po ngayon ang tagumpay, paglago, at kasaganaan sa aking negosyo.\n\nAmen.']];
+const IM=(p,w)=>`<img src="images/${p[1]}.png" alt="${p[0]}" loading="lazy" onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=${p[2]}&sz=w${w}'">`;
+$('#plist').innerHTML=P.map((p,i)=>`<button data-i="${i}">${IM(p,400)}<b>${p[0]}</b></button>`).join('');
+document.querySelectorAll('#plist button').forEach(b=>b.onclick=()=>{const p=P[b.dataset.i];
+out('#p_out',`<div class="pimg">${IM(p,1000)}</div><h3 style="color:var(--gold);margin:12px 0 8px">${p[3]}</h3>${p[4]}`,'#p_v');$('#p_out').scrollIntoView({behavior:'smooth',block:'start'})});
+
+/* ===== SETTINGS: PALITAN DITO ===== */
+const CFG={
+  name:'Gabay ng Langit',
+  bio_en:'Thank you for your order and for trusting us. Here are your guidance and prayers, for you and your family back home.',
+  bio:'Salamat sa iyong order at pagtitiwala sa amin. Narito ang iyong gabay at mga panalangin, para sa iyo at sa pamilya mo sa Pinas.',
+  messenger:'',   // hal. https://m.me/PangalanNgPage
+  whatsapp:'',    // hal. 639171234567 (country code, walang + o space)
+  viber:'',       // hal. viber://chat?number=%2B639171234567
+  // Mga TUNAY na kuwento lang ng customer, na may pahintulot nila:
+  testimonials:[
+    // {text:'Salamat po, gumaan ang loob ko.', who:'Maria, Dubai'},
+  ]
+};
+$('#brand').textContent=CFG.name;document.title=CFG.name+' • Panalangin at Gabay';$('#bio').textContent=CFG.bio;
+(function(){const c=$('#contact');const L=[['💬 Messenger',CFG.messenger],['🟢 WhatsApp',CFG.whatsapp&&'https://wa.me/'+CFG.whatsapp],['🟣 Viber',CFG.viber]].filter(x=>x[1]);
+c.innerHTML=L.map(x=>`<a class="btn sm ghost" href="${x[1]}" target="_blank" rel="noopener">${x[0]}</a>`).join('')+'<button class="btn sm ghost" id="share">🔗 Ibahagi sa Pamilya</button>';
+$('#share').onclick=async()=>{const u=location.href;try{if(navigator.share)await navigator.share({title:CFG.name,url:u});else{await navigator.clipboard.writeText(u);alert(lang==='en'?'Link copied!':'Nakopya ang link!')}}catch(e){}}})();
+function tick(){const n=new Date(),h=n.getHours(),en=lang==='en';
+$('#greet').textContent=en?(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+'. Thank you for your order.':(h<12?'Magandang umaga':h<14?'Magandang tanghali':h<18?'Magandang hapon':'Magandang gabi')+'. Salamat sa iyong order.';
+$('#clock').textContent=(en?'🕒 Time in the Philippines: ':'🕒 Oras sa Pinas: ')+n.toLocaleTimeString('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit'})}
+tick();setInterval(tick,30000);
+
+/* ---- Gabay Ngayon ---- */
+const ANG=['Arkanghel Michael (proteksyon at tapang)','Arkanghel Gabriel (mensahe at linaw)','Arkanghel Samael (lakas at disiplina)','Arkanghel Raphael (paghilom at kalusugan)','Arkanghel Zadkiel (pagpapatawad at kapayapaan)','Arkanghel Haniel (pag-ibig at ganda ng loob)','Arkanghel Uriel (karunungan at liwanag)'];
+const DM=['Ang pagod mo ngayon ay binhi ng ginhawa ng pamilya mo bukas. Magpatuloy ka.','Hindi ka nag-iisa kahit malayo ka. Ang panalangin ay tulay na walang layo.','May pintuang magbubukas sa tamang oras. Maghanda at magtiwala.','Ang pasensya mo ngayon ay may kapalit na biyaya. Huminga at magpasalamat.','Bigkasin mo ang pangalan ng mga mahal mo sa panalangin. Ramdam nila iyon.','Ang kabutihang ginawa mo sa kapwa ay babalik sa iyo nang mas malaki.','Ipahinga mo ang puso mo. Ang kaya mong gawin ngayon ay sapat na.','Ang takot ay lilipas. Ang pananalig mo ang mananatili.','Isang munting pasasalamat ngayong umaga ay magbubukas ng buong araw.','Ang pangarap na pinaghihirapan mo ay hawak ng Diyos at ng iyong sipag.'];
+$('#d_go').onclick=()=>{const n=new Date(),v=$('#d_date').value,doy=Math.floor((n-new Date(n.getFullYear(),0,0))/864e5);let lp=0;
+if(v){const {y,m,d}=pd(v);lp=red(sum(y)+sum(m)+sum(d))}
+const msg=DM[(doy+lp)%DM.length],ang=ANG[n.getDay()];
+out('#d_out',`<div class="center" style="font-family:Cinzel;color:var(--gold);font-size:20px">${n.toLocaleDateString('fil-PH',{weekday:'long',month:'long',day:'numeric'})}</div><br>Ang Arkanghel mo ngayong araw: ${ang}.\n\n${msg}`+(v?`\n\nAng Life Path Number mo na ${lp} ay sumasabay sa iyo ngayong araw.`:'')+'\n\n✦ Amen. ✦','#d_v')};
+
+/* ---- Panalangin ng OFW ---- */
+const O=[
+['Proteksyon sa Ibang Bansa',`Mahal na Diyos, ingatan Mo po ako sa lugar na ito na malayo sa aking tahanan. Ilayo Mo ako sa sakuna, sakit, at masasamang tao. Bigyan Mo ako ng lakas ng katawan, linaw ng isip, at pusong may tapang. Samahan Mo ako sa bawat araw ng aking trabaho hanggang sa ligtas akong makauwi. Amen.`],
+['Para sa Ligtas na Biyahe',`Panginoon, sa aking paglalakbay, ipadala Mo po ang Iyong mga anghel upang bantayan ako. Gabayan Mo ang piloto, ang mga kasama kong biyahero, at ang bawat daan na aking tatahakin. Ilayo Mo kami sa disgrasya at antala, at dalhin Mo ako nang ligtas sa aking patutunguhan. Amen.`],
+['Kapag Nangungulila sa Pamilya',`Diyos na mapagmahal, mabigat po ang pangungulila ko ngayon. Ikaw na ang bahalang yumakap sa aking mga mahal sa buhay na hindi ko mayakap. Pawiin Mo ang lungkot, palakasin ang loob ko, at paalalahanan akong may dahilan ang bawat sakripisyo. Hanggang sa muli naming pagsasama. Amen.`],
+['Para sa Pamilya Ko sa Pinas',`Ama sa langit, ipinagkakatiwala ko po sa Iyo ang aking pamilya sa Pilipinas. Bantayan Mo ang kanilang kalusugan, ang pag-aaral ng mga bata, at ang kapayapaan sa aming tahanan. Pagkaisahin Mo kami sa pagmamahalan kahit magkakalayo. Amen.`],
+['Pasasalamat at Kasaganaan',`Panginoon, salamat po sa trabahong ibinigay Mo at sa bawat sahod na nagiging tulong sa aking pamilya. Pagpalain Mo po ang aking mga kamay, ingatan ang aking kita, at turuan akong magtipid, magbahagi, at mag-ipon nang matalino. Nawa'y dumating ang araw na hindi na kailangang lumayo. Amen.`],
+['Lakas sa Trabaho at Mabuting Pakikisama',`Mahal na Diyos, bigyan Mo po ako ng sipag, tiyaga, at karunungan sa aking trabaho. Pagkalooban Mo ako ng mabuting amo, mabubuting kasama, at maayos na kontrata. Ilayo Mo ako sa pang-aabuso, pagkakamali, at inggit. Amen.`]];
+$('#olist').innerHTML=O.map((p,i)=>`<button data-i="${i}"><b>🕯 ${p[0]}</b></button>`).join('');
+document.querySelectorAll('#olist button').forEach(b=>b.onclick=()=>{const p=O[b.dataset.i];
+out('#o_out',`<h3 style="color:var(--gold);margin-bottom:8px">${p[0]}</h3>${p[1]}`,'#o_v');$('#o_out').scrollIntoView({behavior:'smooth',block:'nearest'})});
+
+/* ---- Kandila at Petisyon ---- */
+let lastPetition='';
+$('#c_go').onclick=()=>{const nm=$('#c_name').value.trim(),tx=$('#c_text').value.trim();
+if(!tx){alert('Isulat muna ang iyong ipinapanalangin.');return}
+let n=0;try{n=(+localStorage.getItem('candles')||0)+1;localStorage.setItem('candles',n)}catch(e){}
+lastPetition=`Petisyon${nm?' ni '+nm:''}: ${tx}`;
+out('#c_out',`<div class="flame"></div><div class="wax"></div><br>${nm?nm+', ':''}naisindi na ang iyong kandila.\nIpinapanalangin: ${tx}\n\nMahal na Diyos, dinggin Mo po ang hiling na ito at ibigay ang pinakamabuti. Amen.`+(n>1?`\n\nKandila mo ito sa pagkakasindi #${n}.`:''),'#c_v');
+$('#c_send').hidden=false};
+$('#c_ship').onclick=async()=>{const t=encodeURIComponent(lastPetition);
+if(CFG.whatsapp){window.open('https://wa.me/'+CFG.whatsapp+'?text='+t,'_blank')}
+else if(CFG.messenger){try{await navigator.clipboard.writeText(lastPetition)}catch(e){}alert('Nakopya ang petisyon mo. I-paste ito sa Messenger.');window.open(CFG.messenger,'_blank')}
+else{try{await navigator.clipboard.writeText(lastPetition);alert('Nakopya ang petisyon mo. Ipadala ito sa amin sa chat.')}catch(e){alert(lastPetition)}}};
+
+/* ---- Dynamic: Mag-order at Kuwento ng Pananalig ---- */
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function addPanel(id,icon,label,html){const sec=document.createElement('section');sec.className='panel';sec.id=id;sec.innerHTML=html;
+document.querySelector('.note').before(sec);const b=document.createElement('button');b.dataset.p=id;b.innerHTML=`<span>${icon}</span>${label}`;b.onclick=()=>show(id);$('#menu').appendChild(b)}
+if(CFG.testimonials.length)addPanel('kuwento','💛','Kuwento ng Pananalig',`<h2>Kuwento ng Pananalig</h2><p class="sub">Mga salita mula sa mga kababayan nating nakinabang.</p>`+CFG.testimonials.map(t=>`<div class="result">${esc(t.text)}\n<span style="color:var(--gold)">- ${esc(t.who)}</span></div>`).join(''));
+
+/* ================= LANGUAGE (Filipino / English) ================= */
+const LANGS=[['fil','Filipino'],['en','English'],['ceb','Cebuano (Bisaya)'],['ilo','Ilocano'],['hil','Hiligaynon (Ilonggo)'],['pam','Kapampangan'],['bcl','Bikol'],['war','Waray']];
+let ui=(()=>{try{const v=localStorage.getItem('ui');return LANGS.some(l=>l[0]===v)?v:'fil'}catch(e){return'fil'}})();
+let lang=ui==='en'?'en':'fil';
+const EN_UI={
+'✦ Simulan ang Paglalakbay ✦':'✦ Begin the Journey ✦','Kulay ng 2027':'Color of 2027','Mga Panalangin':'Prayers','Gabay Ngayong Araw':"Today's Guidance",'Panalangin ng OFW':'OFW Prayers','Kandila at Petisyon':'Candle & Petition','Kuwento ng Pananalig':'Stories of Faith','Harap':'Front','Likod':'Back',
+'🌏 Para sa mga OFW':'🌏 For OFWs','Panalangin • Pananampalataya • Gabay ng Uniberso':'Prayer • Faith • Guidance of the Universe',
+'Ilagay ang iyong detalye para mabasa ang gabay para sa iyo.':'Enter your details to read your guidance.','Pangalan (opsyonal)':'Name (optional)','Petsa ng kapanganakan':'Date of birth','Oras ng kapanganakan':'Time of birth','Lugar ng kapanganakan':'Place of birth','Basahin ang Gabay':'Read My Guidance',
+'Alamin ang iyong bituin at mensahe mula sa kalangitan.':'Discover your star and your message from the heavens.','Ipakita ang Sign Ko':'Show My Sign',
+'Kulay ng Taon 2027':'Color of the Year 2027','Ang kulay na gagabay sa iyo sa darating na taon.':'The color that will guide you in the coming year.','Ipakita ang Kulay Ko':'Show My Color',
+'Pumili ng panalangin. Maaari mo itong basahin o pakinggan.':'Choose a prayer. You can read it or listen to it.',
+'Mensahe at Arkanghel para sa araw mo, saan ka man sa mundo. Ilagay ang birthday para mas personal (opsyonal).':'A message and Archangel for your day, wherever you are in the world. Add your birthday to make it more personal (optional).','Basahin ang Gabay Ngayon':"Read Today's Guidance",
+'Mga panalangin para sa mga kababayan nating malayo sa pamilya.':'Prayers for our countrymen who are far from their families.',
+'Magsindi ng kandila para sa iyong hiling. Maaari mo ring ipadala sa amin ang iyong petisyon upang maipanalangin.':'Light a candle for your request. You may also send us your petition so we can pray for it.','Pangalan':'Name','Ano ang ipinapanalangin mo?':'What are you praying for?','🕯 Magsindi ng Kandila':'🕯 Light a Candle','Ipadala ang Petisyon':'Send the Petition',
+'Mga salita mula sa mga kababayan nating nakinabang.':'Words from our countrymen who have been blessed.',
+'Ang mga gabay dito ay para sa inspirasyon at pagninilay, hindi kapalit ng payo ng doktor, abogado, o propesyonal.':'The guidance here is for inspiration and reflection, not a substitute for the advice of a doctor, lawyer, or other professional.',
+'🔗 Ibahagi sa Pamilya':'🔗 Share with Family','🔊 Pakinggan':'🔊 Listen','⏹ Itigil':'⏹ Stop'};
+const EN_PH={'Hal. Antipolo, Rizal':'e.g. Antipolo, Rizal','Hal. Kalusugan ng nanay ko sa Pinas':"e.g. My mother's health back in the Philippines"};
+const K=['✦ Simulan ang Paglalakbay ✦','Kulay ng 2027','Mga Panalangin','Gabay Ngayong Araw','Panalangin ng OFW','Kandila at Petisyon','🌏 Para sa mga OFW','🔊 Pakinggan','⏹ Itigil','🔗 Ibahagi sa Pamilya','Basahin ang Gabay','Ipakita ang Sign Ko','Ipakita ang Kulay Ko','Basahin ang Gabay Ngayon','🕯 Magsindi ng Kandila','Ipadala ang Petisyon','Petsa ng kapanganakan','Oras ng kapanganakan','Lugar ng kapanganakan','Pangalan'];
+const RG={
+ceb:['✦ Sugdi ang Panaw ✦','Kolor sa 2027','Mga Pag-ampo','Giya Karong Adlawa','Pag-ampo sa OFW','Kandila ug Petisyon','🌏 Para sa mga OFW','🔊 Pamatii','⏹ Undangi','🔗 Ipaambit sa Pamilya','Basaha ang Giya','Ipakita ang Akong Sign','Ipakita ang Akong Kolor','Basaha ang Giya Karon','🕯 Sindihi ang Kandila','Ipadala ang Petisyon','Petsa sa pagkatawo','Oras sa pagkatawo','Dapit sa pagkatawo','Ngalan'],
+ilo:['✦ Mangrugi ti Panagbiahe ✦','Maris ti 2027','Dagiti Kararag','Panangiwanwan Ita nga Aldaw','Kararag ti OFW','Kandela ken Petision','🌏 Para kadagiti OFW','🔊 Dengngen','⏹ Isardeng','🔗 Ibinglay iti Pamilia','Basaen ti Panangiwanwan','Ipakita ti Sign Ko','Ipakita ti Maris Ko','Basaen ti Panangiwanwan Ita','🕯 Mangsindi iti Kandela','Ipatulod ti Petision','Petsa ti pannakayanak','Oras ti pannakayanak','Lugar ti pannakayanak','Nagan'],
+hil:['✦ Pagsugod sang Paglakbay ✦','Kolor sang 2027','Mga Pangamuyo','Giya Subong nga Adlaw','Pangamuyo sang OFW','Kandila kag Petisyon','🌏 Para sa mga OFW','🔊 Pamatii','⏹ Hunonga','🔗 Ipaambit sa Pamilya','Basaha ang Giya','Ipakita ang Akon nga Sign','Ipakita ang Akon nga Kolor','Basaha ang Giya Subong','🕯 Sindihi ang Kandila','Ipadala ang Petisyon','Petsa sang pagkatawo','Oras sang pagkatawo','Lugar sang pagkatawo','Ngalan'],
+pam:['','Kulay ning 2027','','','','','🌏 Para keng OFW','','','','','','','','','','','','','Lagyu'],
+bcl:['','Kulay kan 2027','Mga Pamibi','','Pamibi kan OFW','Kandila asin Petisyon','','','','','','','','','','','','','','Ngaran'],
+war:['','Kolor han 2027','Mga Pag-ampo','Giya Yana nga Adlaw','Pag-ampo han OFW','Kandila ngan Petisyon','🌏 Para ha mga OFW','Pamati','Hunong','','','','','','','','','','','Ngaran']};
+const UI_T={en:EN_UI};for(const c in RG){UI_T[c]={};K.forEach((k,i)=>{if(RG[c][i])UI_T[c][k]=RG[c][i]})}
+function applyLang(){const T=UI_T[ui]||null,w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+while(n=w.nextNode()){if(n.parentElement.closest('script,style,textarea'))continue;const raw=n.__o!==undefined?n.__o:n.nodeValue,k=raw.trim();
+if(EN_UI[k]){if(n.__o===undefined)n.__o=n.nodeValue;n.nodeValue=T&&T[k]?raw.replace(k,T[k]):raw}}
+document.querySelectorAll('[placeholder]').forEach(e=>{if(e.__p===undefined)e.__p=e.placeholder;e.placeholder=ui==='en'?(EN_PH[e.__p]||e.__p):e.__p})}
+
+/* --- English content --- */
+const LPE={1:'You were born to lead. You have the courage to begin anew. God encourages you to trust yourself and the path He is opening for you.',2:'You are a peacemaker and a connector. Your patience is your strength. The message now is to wait with faith; the right people and the right time are coming.',3:'You are blessed with words, joy, and creativity. Share your talents, because the more light you give, the more returns to you.',4:'You are a pillar of your family and someone people can trust. Your hard work is watched over by heaven. Build slowly; the foundation you are laying is strong.',5:'Your spirit is free and eager for change. Do not fear new paths; the changes in your life come with protection and new opportunities.',6:'Your heart is your guide. You take care of others, but remember that you matter too. Rest, and receive the love that is returned to you.',7:'Your soul runs deep and you often search for meaning. In silence and prayer, you will hear the clearest answers.',8:'You have the strength to succeed and to steward blessings. Use it with goodness; abundance flows to the one who gives thanks and shares.',9:'You have a wide heart and a mission to help others. Letting go of the past will open the door to a new chapter of your life.',11:'Master Number 11: you have sharp intuition. Your dreams and hunches are messages. Listen, and pray for clarity.',22:'Master Number 22: you are a builder of great dreams. Your faith, joined with action, can build something that benefits many.',33:'Master Number 33: you are a healer and a teacher of love. Your compassion is a light to those who are weary.'};
+const PYE=['','begin something new','be humble and wait','create and rejoice','work with honesty','change and travel','care for your family','reflect and pray','reap your blessings','let go and complete','begin something new','follow your intuition','build your dream','heal others'];
+function dpE(t){if(!t)return'';const h=+t.split(':')[0];
+if(h<5)return'You were born in the deep of night, the hour of souls with strong faith and hidden strength.';
+if(h<12)return'You were born in the morning, a sign of new beginnings and a strength that always rises again.';
+if(h<18)return'You were born in the afternoon, a sign of effort and a heart that knows how to keep going.';
+return'You were born in the evening, a sign of deep feeling and the gift of sensing what cannot be seen.'}
+function enNum(){const v=$('#n_date').value;if(!need(v))return;
+const {y,m,d}=pd(v),lp=red(sum(y)+sum(m)+sum(d)),dn=red(d),nm=$('#n_name').value.trim(),pl=$('#n_place').value.trim(),t=$('#n_time').value,py=red(sum(m)+sum(d)+sum(2027));
+out('#n_out',`<div class="big">${lp}</div><p class="center" style="color:var(--gold);font-family:Cinzel">Life Path Number</p><br>`+(nm?`Dear ${esc(nm)},\n\n`:'')+LPE[lp]+`\n\nYour Birthday Number ${dn} shows your natural gift: ${LPE[dn].split('.')[0]}.\n\n${dpE(t)}`+(pl?` Your birthplace, ${esc(pl)}, is part of your story and of the people who love you.`:'')+`\n\nIn 2027, your Personal Year Number is ${py}. It is a time to ${PYE[py>9?(py===11?11:py===22?12:13):py]||'trust'}.\n\n✦ Message: You are not alone. God and the universe watch over your every step. Give thanks, pray, and keep going with hope. ✦`,'#n_v')}
+const ZE=['You are disciplined and patient. Every bit of your effort is seen by heaven. Do not forget to rest and to trust.','Your mind is free and your heart is for people. Your unique outlook is a gift; share it with humility.','You are deeply feeling and spiritual. Entrust to prayer the worries you cannot carry alone.','You are brave and always ready to begin. Listen for the whisper of the right time before you act; that is when you are strongest.','You are loyal and steady. The blessings you worked for last. Give thanks, and they will grow.','You are clever and talkative, with a gift that draws people in. Use your words to lift others up.','You are caring and deeply intuitive. Your home is a sanctuary; protect your own heart too.','You carry a natural light and the heart of a leader. Your true crown is the goodness you give.','You are careful and generous in service. You do not need to be perfect; your effort is enough in God\'s eyes.','You love justice and peace. Choose with confidence; balance begins within you.','You are deep, with the strength to be reborn. Past wounds become strength when they are prayed over.','You seek truth and freedom. Your journey has a purpose; trust where you are being led.'];
+const EL={Lupa:'Earth',Hangin:'Air',Tubig:'Water',Apoy:'Fire'};
+function enZod(){const v=$('#z_date').value;if(!need(v))return;const {m,d}=pd(v),s=sign(m,d),i=Z.indexOf(s);
+out('#z_out',`<div class="big">${s[1]}</div><p class="center" style="color:var(--gold);font-family:Cinzel;font-size:22px">${s[0]}</p><p class="center" style="color:var(--mute)">Element: ${EL[s[2]]}</p><br>${ZE[i]}\n\n✦ Message: The stars are only a guide; God still holds your path. ✦`,'#z_v')}
+const CE={1:['Ruby Red','Strength, courage, new beginnings.'],2:['Pearl White','Peace, patience, healing.'],3:['Golden Yellow','Joy, talent, creativity.'],4:['Emerald Green','Stability, health, foundation.'],5:['Turquoise Blue','Change, travel, freedom.'],6:['Rose Pink','Love, family, compassion.'],7:['Purple (Amethyst)','Intuition, faith, stillness.'],8:['Gold and Brown','Abundance, success, authority.'],9:['Royal Blue','Wisdom, release, generosity.'],11:['Silver','Clarity of mind and spiritual guidance.'],22:['Gold and White','Building great dreams.'],33:['Rose Gold','Healing and love for others.']};
+function enCol(){const v=$('#k_date').value;if(!need(v))return;const {m,d}=pd(v),t=$('#k_time').value,py=red(sum(m)+sum(d)+sum(2027)),c=C[py],e=CE[py],h=t?+t.split(':')[0]:12,a=ACC[Math.floor(h/4)%6];
+out('#k_out',`<div class="swatch" style="background:${c[1]};color:${c[1]}"></div><p class="center" style="font-family:Cinzel;color:var(--gold);font-size:22px">${e[0]}</p><p class="center" style="color:var(--mute)">Personal Year Number: ${py}</p><br>Your main color in 2027 stands for: ${e[1]}\n\nWear it in your clothing, jewelry, or something you always carry.`+(t?`\n\nBased on your birth time, this is your secondary color for extra strength:<div class="dots"><i style="background:${c[1]}"></i><i style="background:${a}"></i></div>`:'')+`\n✦ Message: Wear your color with prayer, and let it remind you that 2027 is the year of your blessing. ✦`,'#k_v')}
+const DME=['Your tiredness today is a seed of your family\'s comfort tomorrow. Keep going.','You are not alone, even from far away. Prayer is a bridge that distance cannot break.','A door will open at the right time. Prepare, and trust.','Your patience today carries a blessing in return. Breathe, and give thanks.','Say the names of your loved ones in prayer. They feel it.','The kindness you give to others will come back to you greater.','Let your heart rest. What you can do today is enough.','Fear will pass. Your faith will remain.','One small thank-you this morning will open the whole day.','The dream you are working for is held by God and by your hard work.'];
+const ANGE=['Archangel Michael (protection and courage)','Archangel Gabriel (messages and clarity)','Archangel Samael (strength and discipline)','Archangel Raphael (healing and health)','Archangel Zadkiel (forgiveness and peace)','Archangel Haniel (love and grace)','Archangel Uriel (wisdom and light)'];
+function enDaily(){const n=new Date(),v=$('#d_date').value,doy=Math.floor((n-new Date(n.getFullYear(),0,0))/864e5);let lp=0;
+if(v){const {y,m,d}=pd(v);lp=red(sum(y)+sum(m)+sum(d))}
+out('#d_out',`<div class="center" style="font-family:Cinzel;color:var(--gold);font-size:20px">${n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div><br>Your Archangel today: ${ANGE[n.getDay()]}.\n\n${DME[(doy+lp)%DME.length]}`+(v?`\n\nYour Life Path Number ${lp} walks with you today.`:'')+'\n\n✦ Amen. ✦','#d_v')}
+const _n=$('#n_go').onclick,_z=$('#z_go').onclick,_k=$('#k_go').onclick,_d=$('#d_go').onclick;
+$('#n_go').onclick=()=>lang==='en'?enNum():_n();$('#z_go').onclick=()=>lang==='en'?enZod():_z();$('#k_go').onclick=()=>lang==='en'?enCol():_k();$('#d_go').onclick=()=>lang==='en'?enDaily():_d();
+
+const PRE='Dear God,\n\nThrough the Seven Archangels, especially Archangels Michael, Gabriel, and Uriel, ';
+const PE=[
+['Luck and Winning','Prayer for Luck, and Winning in Lotto or Raffles',PRE+`I ask for Your guidance and grace for luck and success in games of chance, lotto, or raffles.\n\nOpen the doors of good fortune, and grant me favor and fortunate opportunities. Guide me to stay calm, wise, and upright in every decision and attempt I make.\n\nI offer to You the fruit of any possible win, and I will use it rightly, for my good, my family's, and for a worthy purpose. Thank You for Your endless guidance, luck, and blessings.\n\nAmen.`],
+['Good Fortune','Prayer for Good Fortune and Favor',PRE+`I ask for Your holy grace of good fortune and favor in my life.\n\nOpen the doors to wonderful opportunities, blessings, abundance, and success.\n\nGuide me to be ready, diligent, and wise in every chance You give.\n\nKeep me away from obstacles and negative influences, and grant that I may always be in the right place, with the right people, at the right time.\n\nThank You for Your endless guidance, favor, and abundant blessings.\n\nAmen.`],
+['New Opportunities','Prayer for Success and New Opportunities',PRE+`I ask for Your blessing, guidance, and the opening of new opportunities in my life.\n\nGive me wisdom, courage, and the right direction to carry out my plans and goals well. Open the doors of success in my work, business, and endeavors, and keep me from any obstacle. Guide me to seize the opportunities You give, that they may become a path to a brighter future for me and my family.\n\nThank You for Your endless guidance, support, and abundant blessings.\n\nAmen.`],
+['Wisdom and Right Decisions','Prayer for Wisdom and Right Decisions',PRE+`I ask for Your holy guidance and wisdom in every decision I make.\n\nGive me a clear mind, broad understanding, and true discernment, so that I choose what is right and good for my life, my family, and my future. Fill my heart with peace and confidence that my decisions follow Your will.\n\nKeep me from mistakes, haste, and wrong influences, and guide me on the path that is right, safe, and blessed.\n\nThank You for Your endless guidance, wisdom, and love.\n\nAmen.`],
+['Protection and Guidance','Prayer for Protection and Guidance',PRE+`I ask for Your holy protection over me and my loved ones. Open my mind and heart so that I am always guided to decide rightly, avoid harm, and be kept from all evil.\n\nFill me with wisdom, strength, peace, and calm every day. Guide me in my errands, my work, and my plans, that I may always be on the right path and fulfill Your will.\n\nThank You for Your endless guidance, protection, and love.\n\nAmen.`],
+["Children's Education","Prayer for My Children's Studies and Future",PRE+`I ask for Your guidance and protection for my children in their studies. Give them clear thinking, wise understanding, a good memory, and diligence in learning.\n\nFill them with discipline, determination, and right judgment, so that they reach their dreams and have a bright future.\n\nKeep them from temptation, anxiety, and negative influences that could get in the way of their studies.\n\nThank You for Your endless guidance, protection, and love for my children.\n\nAmen.`],
+['Family and Loved Ones','Prayer for Family and Loved Ones',PRE+`I ask for Your holy protection and guidance for my family and loved ones.\n\nOpen our home to love, understanding, unity, and peace.\n\nGuide us in every decision, keep us from any danger, sickness, and harm, and give us good health, strength, and goodness every day.\n\nMay You bless our bond, make our blessings grow, and may our family always be full of love and respect.\n\nThank You for Your endless guidance, protection, and love for us.\n\nAmen.`],
+['Positive Relationships','Prayer for Good Relationships and More Positive People in My Life',PRE+`I ask for Your holy help so that I may be pleasant, have a good aura, and bring positive energy to people. Open my path so that I may have better relationships, true friends, dependable companions, and good people who support me.\n\nGuide me in how I treat others so that I am always respectful, kind, understanding, and positive. May You draw into my life people with good intentions who help my growth, success, and peace.\n\nThank You for Your endless guidance, protection, and blessings.\n\nAmen.`],
+['Love and Relationships','Prayer for Love and Strong Relationships',PRE+`I ask for Your holy guidance for my love and my relationships. Open my heart to experience true and faithful love, respect, and understanding.\n\nGuide me to meet the right person for me, or to strengthen and deepen my current relationship.\n\nMay You remove the obstacles, misunderstandings, and any negative influence that destroy unity and peace in our relationship.\n\nThank You for Your endless guidance, protection, and love.\n\nAmen.`],
+['Career and Work','Prayer for Success in Work and Career',PRE+`I ask for Your holy help and guidance for my career and job opportunities. Open the doors to new opportunities, the right job, and growth in my profession.\n\nGuide me to do my duty well and with honesty, to succeed in trials, and to reach a stable and secure future. May You send me helpful people, the right chances, and projects that open more growth and success in my life.\n\nThank You for Your endless guidance, protection, and blessings.\n\nAmen.`],
+['Business Success','Prayer for Business Success',PRE+`I ask for Your holy guidance and blessing for my business.\n\nOpen the doors to growth, more sales, more customers, and steady income.\n\nGuide me to make the right decisions, be wise in managing capital, and stay far from any loss.\n\nMay You keep blessing my products and services, give my customers trust, and strengthen my relationships with my business partners.\n\nThank You for Your endless guidance, protection, and abundant blessings. I now receive success, growth, and abundance in my business.\n\nAmen.`]];
+const OE=[
+['Protection Abroad',`Dear God, keep me safe in this place far from my home. Keep me from accidents, sickness, and harmful people. Give me strength of body, clarity of mind, and a courageous heart. Be with me every day of my work until I return home safely. Amen.`],
+['For a Safe Journey',`Lord, on my journey, send Your angels to watch over me. Guide the pilot, my fellow travelers, and every road I take. Keep us from accident and delay, and bring me safely to my destination. Amen.`],
+['When I Miss My Family',`Loving God, my longing is heavy today. Please embrace the loved ones I cannot hold. Ease my loneliness, strengthen my heart, and remind me that every sacrifice has a reason. Until we are together again. Amen.`],
+['For My Family in the Philippines',`Father in heaven, I entrust to You my family in the Philippines. Watch over their health, the schooling of the children, and the peace of our home. Unite us in love even while we are apart. Amen.`],
+['Gratitude and Abundance',`Lord, thank You for the work You have given me and for every paycheck that helps my family. Bless my hands, protect my earnings, and teach me to save, share, and plan wisely. May the day come when I no longer need to be far away. Amen.`],
+['Strength at Work and Good Relationships',`Dear God, give me diligence, patience, and wisdom in my work. Grant me a good employer, good coworkers, and a fair contract. Keep me from abuse, mistakes, and envy. Amen.`]];
+function renderLists(){const en=lang==='en';
+$('#plist').innerHTML=P.map((p,i)=>`<button data-i="${i}">${IM(p,400)}<b>${en?PE[i][0]:p[0]}</b></button>`).join('');
+document.querySelectorAll('#plist button').forEach(b=>b.onclick=()=>{const i=b.dataset.i,p=P[i];
+out('#p_out',`<div class="pimg">${IM(p,1000)}</div><h3 style="color:var(--gold);margin:12px 0 8px">${en?PE[i][1]:p[3]}</h3>${en?PE[i][2]:p[4]}`,'#p_v');$('#p_out').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#olist').innerHTML=O.map((p,i)=>`<button data-i="${i}"><b>🕯 ${en?OE[i][0]:p[0]}</b></button>`).join('');
+document.querySelectorAll('#olist button').forEach(b=>b.onclick=()=>{const i=b.dataset.i;
+out('#o_out',`<h3 style="color:var(--gold);margin-bottom:8px">${en?OE[i][0]:O[i][0]}</h3>${en?OE[i][1]:O[i][1]}`,'#o_v');$('#o_out').scrollIntoView({behavior:'smooth',block:'nearest'})})}
+
+/* candle (bilingual) */
+$('#c_go').onclick=()=>{const en=lang==='en',nm=$('#c_name').value.trim(),tx=$('#c_text').value.trim();
+if(!tx){alert(en?'Please write what you are praying for.':'Isulat muna ang iyong ipinapanalangin.');return}
+let n=0;try{n=(+localStorage.getItem('candles')||0)+1;localStorage.setItem('candles',n)}catch(e){}
+lastPetition=en?`Petition${nm?' of '+nm:''}: ${tx}`:`Petisyon${nm?' ni '+nm:''}: ${tx}`;
+out('#c_out',`<div class="flame"></div><div class="wax"></div><br>`+(en?`${nm?esc(nm)+', ':''}your candle has been lit.\nYou are praying for: ${esc(tx)}\n\nDear God, hear this request and grant what is best. Amen.`+(n>1?`\n\nThis is candle #${n} for you.`:''):`${nm?esc(nm)+', ':''}naisindi na ang iyong kandila.\nIpinapanalangin: ${esc(tx)}\n\nMahal na Diyos, dinggin Mo po ang hiling na ito at ibigay ang pinakamabuti. Amen.`+(n>1?`\n\nKandila mo ito sa pagkakasindi #${n}.`:'')),'#c_v');
+$('#c_send').hidden=false};
+$('#c_ship').onclick=async()=>{const en=lang==='en',t=encodeURIComponent(lastPetition);
+if(CFG.whatsapp){window.open('https://wa.me/'+CFG.whatsapp+'?text='+t,'_blank')}
+else{try{await navigator.clipboard.writeText(lastPetition)}catch(e){}
+alert(en?'Your petition was copied. Paste it into our chat.':'Nakopya ang petisyon mo. I-paste ito sa chat namin.');if(CFG.messenger)window.open(CFG.messenger,'_blank')}};
+
+/* switcher */
+function setLang(code){ui=code;lang=code==='en'?'en':'fil';try{localStorage.setItem('ui',code)}catch(e){}stopV();
+document.documentElement.lang=code==='fil'?'fil':code;
+['n','z','k','d','o','p','c'].forEach(x=>{$('#'+x+'_out').innerHTML='';$('#'+x+'_v').hidden=true});$('#c_send').hidden=true;
+$('#bio').textContent=lang==='en'?CFG.bio_en:CFG.bio;
+$('#langbtn').textContent='🌐 '+LANGS.find(l=>l[0]===code)[1].split(' (')[0];
+renderLists();tick();applyLang();drawLangs()}
+function drawLangs(){$('#langlist').innerHTML=LANGS.map(l=>`<button class="lopt${l[0]===ui?' on':''}" data-l="${l[0]}">${l[1]}</button>`).join('');
+const full=['fil','en'].includes(ui);
+$('#langnote').textContent=full?'':'Mga label at menu lang ang naisalin sa wikang ito, at isinalin ng AI kaya maaaring may mali. Ang mga panalangin at gabay ay nasa Filipino pa. / Only labels and menus are translated; prayers and guidance are in Filipino.';
+document.querySelectorAll('.lopt').forEach(b=>b.onclick=()=>{setLang(b.dataset.l);$('#langdlg').hidden=true})}
+$('#langbtn').onclick=()=>{drawLangs();$('#langdlg').hidden=false};
+$('#langdlg').onclick=e=>{if(e.target.id==='langdlg')$('#langdlg').hidden=true};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#langdlg').hidden=true});
+setLang(ui);
+if('speechSynthesis' in window)speechSynthesis.getVoices();
+</script>
+</body>
+</html>
